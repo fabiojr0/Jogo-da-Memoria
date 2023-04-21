@@ -1,4 +1,4 @@
-const cards = [
+const cardsImages = [
     {
         img: "dabi.jpg",
         id: 1
@@ -41,73 +41,84 @@ function sortear(max) {
     }   
 }
 sortear(16)
-console.log(sorteados);
-const cardsBack = document.querySelectorAll('.back img');
 
-console.log(cardsBack);
+const cards = document.querySelectorAll('.cardImg');
 
-for(let i = 0; i < 8; i++){
-    let cont = 0
-    for(let index = 0; index < 16; index++){
-        cardsBack[sorteados[index]].setAttribute('src', `photos/${cards[i].img}`);
-        cardsBack[sorteados[index]].setAttribute('data-id', `${cards[i].id}`);
-        cont++
-        if (cont == 2) {
-            cont=0;
-            i++;
-        }
-    };   
-};
-
-
-const flippers = document.querySelectorAll('.flipper')
-var lastClick = "";
-var lastIndex = 0;
-var cont=0;
-flippers.forEach(function(flipper, index) {
-    flipper.addEventListener('click',(infos) => {
-        if(!flipper.classList.contains('showBack')){ 
-        rotateCard(flipper)
-        var clicked = infos.target;
-        setTimeout(function() {
-        if (lastClick != "") {
-            const idAtual = cardsBack[index].getAttribute('data-id');
-            const idLast = lastClick.getAttribute('data-id');
-            if (idAtual === idLast) {
-                cardsBack.forEach(element => {
-                    if (idAtual == element.getAttribute('data-id')) {
-                        element.classList.add('showBack');
-                        element.classList.add('stayBack');
-                    }
-                });
-                
+function shuffleCards() {
+    for(let i = 0; i < 8; i++){
+        let cont = 0
+        for(let index = 0; index < 16; index++){
+            cards[sorteados[index]].setAttribute('data-id', `${cardsImages[i].id}`);
+            cont++
+            if (cont == 2) {
+                cont=0;
+                i++;
             }
-            if (idAtual !== idLast && !clicked.classList.contains('stayBack') && !lastClick.classList.contains('stayBack')){
-                rotateBack(lastIndex, index)
+        };   
+    };
+}
+shuffleCards()
+
+
+var lastId
+var lastIndex=-1
+var playable = true
+cards.forEach(function(card, index){
+    card.addEventListener('click', (infos) =>{
+        if(playable == true && !cards[index].classList.contains('found')){
+            
+            var click = cards[index];
+            var clickId = click.getAttribute('data-id')
+            var cardImage = photoOfId(clickId)
+            
+            click.setAttribute('src', `photos/${cardImage}`);
+    
+            var match = checkCards(clickId, lastId)
+            if (lastIndex >= 0 && lastIndex != index) {
+                playable = false
+                if (match == false) {
+                    backCard(index);
+                    backCard(lastIndex);                
+                } else {
+                    cardFounded(index)
+                    cardFounded(lastIndex)
+                }
+                lastIndex = -1
             }
-            lastClick = "";
-            lastIndex = 0;
-        }
-        
-        console.log(lastClick, cardsBack[index]);
-        lastClick = cardsBack[index];
-        lastIndex = index;
-        }, 2000);
-    } 
+            else{
+                lastId = clickId;
+                lastIndex = index
+            }
+        }  
     })
 });
 
-function rotateCard(flipper) {
-    if(flipper.classList.contains('showBack')) {
-        flipper.classList.remove('showBack');
-        flipper.setAttribute('transform', "rotateY(-180deg)")
-    }else {
-        flipper.classList.add('showBack');
-    }
+function photoOfId(id) {
+    let photo
+    cardsImages.forEach((image) =>{
+        if (Number(id) == image.id) {
+            photo = image.img
+        }
+    })
+    return photo
 }
 
-function rotateBack(last, click) {
-    flippers[last].classList.remove('showBack');
-    flippers[click].classList.remove('showBack');
-    lastClick = "";
+function checkCards(id, lastId = -1) {
+    let match = false
+    id == lastId ? match = true : match = false
+    return match
+}
+
+function backCard(index) {
+    cards[index].classList.add('wrong')
+    setTimeout(()=>{
+        cards[index].setAttribute('src', `photos/Jogo da memória.png`);
+        playable = true
+        cards[index].classList.remove('wrong')
+    },1000)
+}
+
+function cardFounded(index) {
+    cards[index].classList.add('found')
+    playable = true
 }

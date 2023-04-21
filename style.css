@@ -28,55 +28,34 @@ main {
     justify-content: space-around;
 }
 
-.flipper{
+header h1 {
+    text-shadow: rgba(0, 0, 0, 0.192)0px 3px 7px;
+}
+
+.card{
 	height: 130px;
 	transform-style: preserve-3d;
     border-radius: 8px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
     cursor: pointer;
     transition: .4s;
+    user-select: none;
 }
 
-.flipper img {
+.cardImg {
+    border: 4px solid rgb(3, 3, 3);
     object-fit: cover;
     width: 100%;
 	height: 100%;
     border-radius: 8px;
 }
 
-.showBack {
-	transform: rotateY(180deg);
-}
-/* .flipper:hover {
-    transform: rotateY(180deg);
-} */
-.stayBack {
-    transition: 0;
-    transform: rotateY(-180deg);
-    border: 2px solid black;
+.found {
+    border: 4px solid rgb(116, 13, 201);
+    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+    cursor: default;
 }
 
-.flipper{
-	position: relative;
+.wrong {
+    border: 4px solid rgb(179, 17, 17);
 }
-.front, .back{
-	position: absolute;
-	width: 100%;
-	height: 100%;
-}
-
-.back{
-	transform: rotateY(180deg);
-}
-
-.front, .back{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-}
-
-
-/* .flipper:click {
-    transform: rotateY(180deg);
-} */
